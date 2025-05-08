@@ -30,18 +30,21 @@ branding:
 
 runs:
   using: 'composite'
-  shell: bash
   steps:
     - name: Load docker image
       uses: ghcr.io/joshraphael/rascript-audit-img:71ce0e31e87c882e3c561eb1435b4fc26a8c63b1
     - name: Set ENV vars for home
+      shell: bash
       run: echo "CONTAINER_HOME=$GITHUB_WORKSPACE" >> $GITHUB_ENV
     - name: Test RAScript Audit
+      shell: bash
       run: sh /app/entry.sh
     - name: Test RAScript Audit2
+      shell: bash
       working-directory: ${{env.CONTAINER_HOME}}
       run: ls
     - name: Test RAScript Audit2
+      shell: bash
       working-directory: ${{env.CONTAINER_HOME}}
       run: pwd 
 
