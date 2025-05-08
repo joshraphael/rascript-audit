@@ -31,8 +31,8 @@ branding:
 runs:
   using: 'composite'
   steps:
-    - name: Load docker image
-      uses: joshraphael/rascript-audit-img@71ce0e31e87c882e3c561eb1435b4fc26a8c63b1
+    - name: Load docker imagedd
+      uses: docker://ghcr.io/joshraphael/rascript-audit-img@71ce0e31e87c882e3c561eb1435b4fc26a8c63b1
     - name: Set ENV vars for home
       shell: bash
       run: echo "CONTAINER_HOME=$GITHUB_WORKSPACE" >> $GITHUB_ENV
