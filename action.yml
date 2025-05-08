@@ -36,7 +36,7 @@ runs:
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+        password: ${{ env.SECRET_GITHUB_TOKEN }}
     - name: Load docker imagedd
       uses: docker://ghcr.io/joshraphael/rascript-audit-img@b4a215513900d2ee710b6ff9131a6eeb7afe1ab3
     - name: Set ENV vars for home
