@@ -41,6 +41,9 @@ runs:
       run: pwd
     - name: Load docker imagedd
       uses: docker://ghcr.io/joshraphael/rascript-audit-img:b4a215513900d2ee710b6ff9131a6eeb7afe1ab3
+      run: |
+        ls
+        pwd
     - name: Set ENV vars for home
       shell: bash
       run: echo "CONTAINER_HOME=$GITHUB_WORKSPACE" >> $GITHUB_ENV
