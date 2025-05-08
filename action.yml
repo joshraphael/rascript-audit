@@ -29,7 +29,7 @@ branding:
   icon: award
 
 runs:
-  using: docker
+  using: 'composite'
   image: ghcr.io/joshraphael/rascript-audit-img:71ce0e31e87c882e3c561eb1435b4fc26a8c63b1
   steps:
     - name: Set ENV vars for home
