@@ -30,6 +30,7 @@ branding:
 
 runs:
   using: 'composite'
+  shell: bash
   steps:
     - name: Load docker image
       uses: ghcr.io/joshraphael/rascript-audit-img:71ce0e31e87c882e3c561eb1435b4fc26a8c63b1
