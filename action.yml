@@ -31,12 +31,6 @@ branding:
 runs:
   using: 'composite'
   steps:
-    - name: Log in to the Container registry
-      uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ env.SECRET_GITHUB_TOKEN }}
     - name: Load docker imagedd
       uses: docker://ghcr.io/joshraphael/rascript-audit-img:b4a215513900d2ee710b6ff9131a6eeb7afe1ab3
     - name: Set ENV vars for home
