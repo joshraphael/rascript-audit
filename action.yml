@@ -29,7 +29,6 @@ branding:
   icon: award
 
 runs:
-  using: "composite"
   using: docker
   image: ghcr.io/joshraphael/rascript-audit-img:71ce0e31e87c882e3c561eb1435b4fc26a8c63b1
   steps:
