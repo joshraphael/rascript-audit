@@ -41,6 +41,7 @@ runs:
     - name: Checkout repo
       uses: actions/checkout@v4
     - name: Run rascript-audit
+      shell: bash
       # uses: docker://ghcr.io/joshraphael/rascript-audit-img:v0.0.1
       run: |
         docker run -v "/var/run/docker.sock":"/var/run/docker.sock" --name $(IMG_NAME) -e GAME_ID=$(GAME_ID) -e REPO_DIR=$(REPO_DIR) -e RASCRIPT_FILE=$(RASCRIPT_FILE) --mount type=bind,src=.,dst=$(REPO_DIR) -it $(IMG_NAME)
