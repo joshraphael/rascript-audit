@@ -43,9 +43,9 @@ runs:
         export container_id=$(docker ps -a --filter name=${{ inputs.name }} -q)
         echo $container_id
         docker ps -a
-        docker cp rascript-audit:/app/home.txt container_home/
+        docker cp $container_id:/app/home.txt container_home/
         docker ps -a
-        docker cp rascript-audit:/app/copy.sh container_home/
+        docker cp r$container_id:/app/copy.sh container_home/
         docker ps -a
         GAME_ID=${{inputs.game-id}} bash container_home/copy.sh
 
