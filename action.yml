@@ -31,20 +31,14 @@ branding:
 runs:
   using: 'composite'
   steps:
-    - name: Set globals
-      shell: bash
-      run: |
-        echo "GAME_ID=${{inputs.game-id}}" >> "${GITHUB_OUTPUT}"
-        echo "RASCRIPT_FILE=${{inputs.rascript}}" >> "${GITHUB_OUTPUT}"
-        echo "REPO_DIR=/app/rascript" >> "${GITHUB_OUTPUT}"
-        echo "IMG_NAME=ghcr.io/joshraphael/rascript-audit-img:v0.0.1" >> "${GITHUB_OUTPUT}"
     - name: Checkout repo
       uses: actions/checkout@v4
     - name: Run rascript-audit
       shell: bash
       # uses: docker://ghcr.io/joshraphael/rascript-audit-img:v0.0.1
       run: |
-        docker run -v "/var/run/docker.sock":"/var/run/docker.sock" --name rascript-audit -e GAME_ID=$GAME_ID -e REPO_DIR=$REPO_DIR -e RASCRIPT_FILE=$RASCRIPT_FILE --mount type=bind,src=.,dst=/app/rascript -i ghcr.io/joshraphael/rascript-audit-img:v0.0.1
+        echo $GAME_ID
+        docker run -v "/var/run/docker.sock":"/var/run/docker.sock" --name rascript-audit -e GAME_ID=${{inputs.game-id}} -e REPO_DIR=/app/rascript -e RASCRIPT_FILE=${{inputs.rascript}} --mount type=bind,src=.,dst=/app/rascript -i ghcr.io/joshraphael/rascript-audit-img:v0.0.1
     # - name: Test RAScript Audit
     #   shell: bash
     #   run: sh /app/entry.sh
