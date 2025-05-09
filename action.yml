@@ -44,7 +44,7 @@ runs:
       shell: bash
       # uses: docker://ghcr.io/joshraphael/rascript-audit-img:v0.0.1
       run: |
-        docker run -v "/var/run/docker.sock":"/var/run/docker.sock" --name rascript-audit -e GAME_ID=$GAME_ID -e REPO_DIR=$REPO_DIR -e RASCRIPT_FILE=$RASCRIPT_FILE --mount type=bind,src=.,dst=/app/rascript -it ghcr.io/joshraphael/rascript-audit-img:v0.0.1
+        docker run -v "/var/run/docker.sock":"/var/run/docker.sock" --name rascript-audit -e GAME_ID=$GAME_ID -e REPO_DIR=$REPO_DIR -e RASCRIPT_FILE=$RASCRIPT_FILE --mount type=bind,src=.,dst=/app/rascript -i ghcr.io/joshraphael/rascript-audit-img:v0.0.1
     # - name: Test RAScript Audit
     #   shell: bash
     #   run: sh /app/entry.sh
