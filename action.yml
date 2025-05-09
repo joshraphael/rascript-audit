@@ -8,21 +8,21 @@ inputs:
     type: number
     required: true
   rascript:
-    description: "The RAScript file name to compile (not including .rascript)"
+    description: "The RAScript file name to compile"
     type: string
     required: true
-  # report:
-  #   description: "Create a report of the audit"
-  #   type: boolean
-  #   required: false
-  # severity:
-  #   description: "Level of severity to fail on"
-  #   type: choice
-  #   required: false
-  #   options: 
-  #     - info
-  #     - warn
-  #     - error
+  report:
+    description: "Create a report of the audit"
+    type: boolean
+    required: false
+  severity:
+    description: "Level of severity to fail on"
+    type: choice
+    required: false
+    options: 
+      - info
+      - warn
+      - error
 
 branding:
   color: blue
@@ -37,26 +37,23 @@ runs:
       shell: bash
       run: |
         mkdir -p container_home
-        echo $GAME_ID
         docker run -v "/var/run/docker.sock":"/var/run/docker.sock" --name rascript-audit-img -e GAME_ID=${{inputs.game-id}} -e RASCRIPT_FILE=${{inputs.rascript}} --mount type=bind,src=.,dst=/app/rascript -i ghcr.io/joshraphael/rascript-audit-img:v0.0.2
-        export container_id=$(docker ps -a --filter name=${{ inputs.name }} -q)
-        docker cp rascript-audit-img:/app/home.txt container_home/
-        docker cp rascript-audit-img:/app/copy.sh container_home/
+        export CONTAINER_ID=$(docker ps -a --filter name=${{ inputs.name }} -q)
+        docker cp $CONTAINER_ID:/app/home.txt container_home/
+        docker cp $CONTAINER_ID:/app/copy.sh container_home/
         GAME_ID=${{inputs.game-id}} bash container_home/copy.sh
     - name: Upload Achievement and Leaderboard Code
       uses: actions/upload-artifact@v4
       with:
         name: user-text
         path: container_home/${{ inputs.game-id }}-User.txt
-
-    # - name: Test RAScript Audit
-    #   shell: bash
-    #   run: sh /app/entry.sh
-    # - name: Test RAScript Audit2
-    #   shell: bash
-    #   working-directory: ${{env.CONTAINER_HOME}}
-    #   run: ls
-    # - name: Test RAScript Audit2
-    #   shell: bash
-    #   working-directory: ${{env.CONTAINER_HOME}}
-    #   run: pwd
+    - name: Upload Code Notes
+      uses: actions/upload-artifact@v4
+      with:
+        name: notes-json
+        path: container_home/${{ inputs.game-id }}-Notes.json
+    - name: Upload Rich Presence
+      uses: actions/upload-artifact@v4
+      with:
+        name: rich-text
+        path: container_home/${{ inputs.game-id }}-Rich.txt
