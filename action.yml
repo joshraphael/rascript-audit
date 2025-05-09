@@ -45,21 +45,21 @@ runs:
     - name: Upload Achievement and Leaderboard Code
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ github.job_id }}-${{ inputs.game-id }}-user-text
+        name: ${{ github.run_id }}-${{ inputs.game-id }}-user-text
         path: container_home/${{ inputs.game-id }}-User.txt
     - name: Upload Code Notes
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ github.job_id }}-${{ inputs.game-id }}-notes-json
+        name: ${{ github.run_id }}-${{ inputs.game-id }}-notes-json
         path: container_home/${{ inputs.game-id }}-Notes.json
     - name: Upload Rich Presence
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ github.job_id }}-${{ inputs.game-id }}-rich-text
+        name: ${{ github.run_id }}-${{ inputs.game-id }}-rich-text
         path: container_home/${{ inputs.game-id }}-Rich.txt
     - name: Upload Report
       uses: actions/upload-artifact@v4
       if: ${{ inputs.report == 'true' }}
       with:
-        name: ${{ github.job_id }}-${{ inputs.game-id }}-report-text
+        name: ${{ github.run_id }}-${{ inputs.game-id }}-report-text
         path: container_home/${{ inputs.game-id }}-Report.txt
