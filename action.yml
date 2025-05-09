@@ -34,11 +34,12 @@ runs:
     - name: Checkout repo
       uses: actions/checkout@v4
     - name: Run rascript-audit
+      uses: docker://ghcr.io/joshraphael/rascript-audit-img:v0.0.2
+    - name: Run rascript-audit
       shell: bash
-      # uses: docker://ghcr.io/joshraphael/rascript-audit-img:v0.0.1
       run: |
         echo $GAME_ID
-        docker run -v "/var/run/docker.sock":"/var/run/docker.sock" --name rascript-audit -e GAME_ID=${{inputs.game-id}} -e REPO_DIR=/app/rascript -e RASCRIPT_FILE=${{inputs.rascript}} --mount type=bind,src=.,dst=/app/rascript -i ghcr.io/joshraphael/rascript-audit-img:v0.0.1
+        docker run -v "/var/run/docker.sock":"/var/run/docker.sock" --name rascript-audit -e GAME_ID=${{inputs.game-id}} -e RASCRIPT_FILE=${{inputs.rascript}} --mount type=bind,src=.,dst=/app/rascript -i ghcr.io/joshraphael/rascript-audit-img:v0.0.2
     # - name: Test RAScript Audit
     #   shell: bash
     #   run: sh /app/entry.sh
