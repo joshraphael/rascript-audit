@@ -33,8 +33,6 @@ runs:
   steps:
     - name: Checkout repo
       uses: actions/checkout@v4
-    # - name: Run rascript-audit
-    #   uses: docker://ghcr.io/joshraphael/rascript-audit-img:v0.0.2
     - name: Run rascript-audit
       shell: bash
       run: |
@@ -45,6 +43,11 @@ runs:
         docker cp rascript-audit-img:/app/home.txt container_home/
         docker cp rascript-audit-img:/app/copy.sh container_home/
         GAME_ID=${{inputs.game-id}} bash container_home/copy.sh
+    - name: Upload Achievement and Leaderboard Code
+      uses: actions/upload-artifact@v4
+      with:
+        name: user-text
+        path: container_home/${{ inputs.game-id }}-User.txt
 
     # - name: Test RAScript Audit
     #   shell: bash
