@@ -40,6 +40,10 @@ runs:
       run: |
         echo $GAME_ID
         docker run -v "/var/run/docker.sock":"/var/run/docker.sock" --name rascript-audit -e GAME_ID=${{inputs.game-id}} -e RASCRIPT_FILE=${{inputs.rascript}} --mount type=bind,src=.,dst=/app/rascript -i ghcr.io/joshraphael/rascript-audit-img:v0.0.2
+        docker cp rascript-audit:/app/home.txt container_home/
+        docker cp rascript-audit:/app/copy.sh container_home/
+        GAME_ID=${{inputs.game-id}} bash container_home/copy.sh
+
     # - name: Test RAScript Audit
     #   shell: bash
     #   run: sh /app/entry.sh
