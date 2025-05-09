@@ -11,18 +11,18 @@ inputs:
     description: "The RAScript file name to compile (not including .rascript)"
     type: string
     required: true
-  report:
-    description: "Create a report of the audit"
-    type: boolean
-    required: false
-  severity:
-    description: "Level of severity to fail on"
-    type: choice
-    required: false
-    options: 
-      - info
-      - warn
-      - error
+  # report:
+  #   description: "Create a report of the audit"
+  #   type: boolean
+  #   required: false
+  # severity:
+  #   description: "Level of severity to fail on"
+  #   type: choice
+  #   required: false
+  #   options: 
+  #     - info
+  #     - warn
+  #     - error
 
 branding:
   color: blue
@@ -31,30 +31,27 @@ branding:
 runs:
   using: 'composite'
   steps:
-    - name: Test RAScript Audit2
+    - name: Set globals
       shell: bash
-      working-directory: ${{env.CONTAINER_HOME}}
-      run: ls
-    - name: Test RAScript Audit2
-      shell: bash
-      working-directory: ${{env.CONTAINER_HOME}}
-      run: pwd
-    - name: Load docker imagedd
-      uses: docker://ghcr.io/joshraphael/rascript-audit-img:b4a215513900d2ee710b6ff9131a6eeb7afe1ab3
       run: |
-        ls
-        pwd
-    - name: Set ENV vars for home
-      shell: bash
-      run: echo "CONTAINER_HOME=$GITHUB_WORKSPACE" >> $GITHUB_ENV
+        echo "GAME_ID=${{inputs.game-id}}" >> "${GITHUB_OUTPUT}"
+        echo "RASCRIPT_FILE=${{inputs.rascript}}" >> "${GITHUB_OUTPUT}"
+        echo "REPO_DIR=/app/rascript" >> "${GITHUB_OUTPUT}"
+        echo "IMG_NAME=ghcr.io/joshraphael/rascript-audit-img:v0.0.1"
+    - name: Checkout repo
+      uses: actions/checkout@v4
+    - name: Run rascript-audit
+      # uses: docker://ghcr.io/joshraphael/rascript-audit-img:v0.0.1
+      run: |
+        docker run -v "/var/run/docker.sock":"/var/run/docker.sock" --name $(IMG_NAME) -e GAME_ID=$(GAME_ID) -e REPO_DIR=$(REPO_DIR) -e RASCRIPT_FILE=$(RASCRIPT_FILE) --mount type=bind,src=.,dst=$(REPO_DIR) -it $(IMG_NAME)
     # - name: Test RAScript Audit
     #   shell: bash
     #   run: sh /app/entry.sh
-    - name: Test RAScript Audit2
-      shell: bash
-      working-directory: ${{env.CONTAINER_HOME}}
-      run: ls
-    - name: Test RAScript Audit2
-      shell: bash
-      working-directory: ${{env.CONTAINER_HOME}}
-      run: pwd
+    # - name: Test RAScript Audit2
+    #   shell: bash
+    #   working-directory: ${{env.CONTAINER_HOME}}
+    #   run: ls
+    # - name: Test RAScript Audit2
+    #   shell: bash
+    #   working-directory: ${{env.CONTAINER_HOME}}
+    #   run: pwd
