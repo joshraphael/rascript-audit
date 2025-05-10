@@ -35,53 +35,23 @@ branding:
 runs:
   using: 'composite'
   steps:
-    - name: Set Environment
-      env:
-        IMG: v0.0.4
-        DOTNET_DIR: C:\\Programs\\dotnet
-      id: env
-      shell: bash
-      run: |
-        echo "IMG_VERSION=${{env.IMG}}" >> "${GITHUB_OUTPUT}"
     - name: Checkout repo
       uses: actions/checkout@v4
-    # - name: pull image
-    #   if: ${{ 1 == 0 }} # this is a hack to pre-fetch the docker image to reduce the logs in the actual action
-    #   env:
-    #     STEP_VAR: 'v0.0.4'
-    #   uses: docker://ghcr.io/joshraphael/rascript-audit-img:${{ env.STEP_VAR }}
-    - name: Run Tests
-      env:
-        ENV_TAGS: "v0.0.4"
-      shell: bash
-      run: |
-        docker pull ghcr.io/joshraphael/rascript-audit-img:${{ env.DOCKER_TAG }}
+    - name: pull image
+      if: ${{ 1 == 0 }} # this is a hack to pre-fetch the docker image to reduce the logs in the actual action
+      uses: docker://ghcr.io/joshraphael/rascript-audit-img:v0.0.4
     - name: Run rascript-audit
       shell: bash
       run: |
         docker container rm -f rascript-audit-img
         mkdir -p container_home
-        docker run --name rascript-audit-img -e GAME_ID=${{ inputs.game-id }} -e RASCRIPT_FILE="${{ inputs.rascript }}" -e REPORT=${{ inputs.report }} -e SEVERITY=${{ inputs.severity }} --mount type=bind,src=.,dst=/app/rascript -i --entrypoint=/app/entry.sh ghcr.io/joshraphael/rascript-audit-img:c9c42f8de9d4d8756e9d7d3ce8065e1fa315c0e0
+        docker run --name rascript-audit-img -e GAME_ID=${{ inputs.game-id }} -e RASCRIPT_FILE="${{ inputs.rascript }}" -e REPORT=${{ inputs.report }} -e SEVERITY=${{ inputs.severity }} --mount type=bind,src=.,dst=/app/rascript -i --entrypoint=/app/entry.sh ghcr.io/joshraphael/rascript-audit-img:v0.0.4
         export CONTAINER_ID=$(docker ps -a --filter name=${{ inputs.name }} -q)
         docker cp $CONTAINER_ID:/app/home.txt container_home/
         docker cp $CONTAINER_ID:/app/copy.sh container_home/
         GAME_ID=${{ inputs.game-id }} bash container_home/copy.sh
-    - name: Upload Audit Without Report
-      if: ${{ inputs.report != 'true' }}
+    - name: Upload Audit
       uses: actions/upload-artifact@v4
       with:
         name: ${{ inputs.id }}-${{ inputs.game-id }}-audit
-        path: |
-          container_home/${{ inputs.game-id }}-User.txt
-          container_home/${{ inputs.game-id }}-Notes.json
-          container_home/${{ inputs.game-id }}-Rich.txt
-    - name: Upload Audit With Report
-      if: ${{ inputs.report == 'true' }}
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ inputs.id }}-${{ inputs.game-id }}-audit
-        path: |
-          container_home/${{ inputs.game-id }}-User.txt
-          container_home/${{ inputs.game-id }}-Notes.json
-          container_home/${{ inputs.game-id }}-Rich.txt
-          container_home/${{ inputs.game-id }}-Report.txt
+        path: container_home/
