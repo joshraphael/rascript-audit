@@ -47,7 +47,9 @@ runs:
       uses: actions/checkout@v4
     - name: pull image
       if: ${{ 1 == 0 }} # this is a hack to pre-fetch the docker image to reduce the logs in the actual action
-      uses: docker://ghcr.io/joshraphael/rascript-audit-img:${{ steps.env.outputs.IMG_VERSION }}
+      env:
+        STEP_VAR: 'v0.0.4'
+      uses: docker://ghcr.io/joshraphael/rascript-audit-img:${{ env.STEP_VAR }}
     - name: Run rascript-audit
       shell: bash
       run: |
