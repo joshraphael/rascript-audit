@@ -35,11 +35,15 @@ branding:
 runs:
   using: 'composite'
   steps:
+    - id: globals
+      name: Global Variables
+      run: echo "IMG_VERSION=v0.0.4"  >> $GITHUB_OUTPUT
+      shell: bash
     - name: Checkout repo
       uses: actions/checkout@v4
     - name: pull image
       if: ${{ 1 == 0 }} # this is a hack to pre-fetch the docker image to reduce the logs in the actual action
-      uses: docker://ghcr.io/joshraphael/rascript-audit-img:c9c42f8de9d4d8756e9d7d3ce8065e1fa315c0e0
+      uses: docker://ghcr.io/joshraphael/rascript-audit-img:${{ steps.globals.outputs.IMG_VERSION }}
     - name: Run rascript-audit
       shell: bash
       run: |
