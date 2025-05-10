@@ -4,7 +4,7 @@ author: joshraphael
 
 inputs:
   id:
-    description: "unique id to prepend on the output file"
+    description: "Unique identifier to prepend on the output file"
     type: string
     required: true
   game-id:
@@ -38,7 +38,7 @@ runs:
     - name: Checkout repo
       uses: actions/checkout@v4
     - name: pull image
-      if: ${{ 1 == 0 }}
+      if: ${{ 1 == 0 }} # this is a hack to pre-fetch the docker image to reduce the logs in the actual action
       uses: docker://ghcr.io/joshraphael/rascript-audit-img:c9c42f8de9d4d8756e9d7d3ce8065e1fa315c0e0
     - name: Run rascript-audit
       shell: bash
@@ -50,24 +50,22 @@ runs:
         docker cp $CONTAINER_ID:/app/home.txt container_home/
         docker cp $CONTAINER_ID:/app/copy.sh container_home/
         GAME_ID=${{ inputs.game-id }} bash container_home/copy.sh
-    - name: Upload Achievement and Leaderboard Code
+    - name: Upload Audit Without Report
+      if: ${{ inputs.report != 'true' }}
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ inputs.id }}-${{ inputs.game-id }}-user-text
-        path: container_home/${{ inputs.game-id }}-User.txt
-    - name: Upload Code Notes
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ inputs.id }}-${{ inputs.game-id }}-notes-json
-        path: container_home/${{ inputs.game-id }}-Notes.json
-    - name: Upload Rich Presence
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ inputs.id }}-${{ inputs.game-id }}-rich-text
-        path: container_home/${{ inputs.game-id }}-Rich.txt
-    - name: Upload Report
-      uses: actions/upload-artifact@v4
+        name: ${{ inputs.id }}-${{ inputs.game-id }}-audit
+        path: |
+          container_home/${{ inputs.game-id }}-User.txt
+          container_home/${{ inputs.game-id }}-Notes.json
+          container_home/${{ inputs.game-id }}-Rich.txt
+    - name: Upload Audit With Report
       if: ${{ inputs.report == 'true' }}
+      uses: actions/upload-artifact@v4
       with:
-        name: ${{ inputs.id }}-${{ inputs.game-id }}-report-text
-        path: container_home/${{ inputs.game-id }}-Report.txt
+        name: ${{ inputs.id }}-${{ inputs.game-id }}-audit
+        path: |
+          container_home/${{ inputs.game-id }}-User.txt
+          container_home/${{ inputs.game-id }}-Notes.json
+          container_home/${{ inputs.game-id }}-Rich.txt
+          container_home/${{ inputs.game-id }}-Report.txt
