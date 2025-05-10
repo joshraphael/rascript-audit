@@ -3,6 +3,10 @@ description: Compiles an RAScript for RetroAchievements development and performs
 author: joshraphael
 
 inputs:
+  id:
+    description: "Unique identifier to prepend on the output file"
+    type: string
+    required: true
   game-id:
     description: "RetroAchievements game id"
     type: number
@@ -33,33 +37,23 @@ runs:
   steps:
     - name: Checkout repo
       uses: actions/checkout@v4
+    - name: pull image
+      if: ${{ 1 == 0 }} # this is a hack to pre-fetch the docker image to reduce the logs in the actual action
+      uses: docker://ghcr.io/joshraphael/rascript-audit-img:v0.0.4
     - name: Run rascript-audit
       shell: bash
       run: |
+        docker container rm -f rascript-audit-img
         mkdir -p container_home
-        docker run --name rascript-audit-img -e GAME_ID=${{ inputs.game-id }} -e RASCRIPT_FILE="${{ inputs.rascript }}" -e REPORT=${{ inputs.report }} -e SEVERITY=${{ inputs.severity }} --mount type=bind,src=.,dst=/app/rascript -i ghcr.io/joshraphael/rascript-audit-img:v0.0.3
+        docker run --name rascript-audit-img -e GAME_ID=${{ inputs.game-id }} -e RASCRIPT_FILE="${{ inputs.rascript }}" -e REPORT=${{ inputs.report }} -e SEVERITY=${{ inputs.severity }} --mount type=bind,src=.,dst=/app/rascript -i --entrypoint=/app/entry.sh ghcr.io/joshraphael/rascript-audit-img:v0.0.4
         export CONTAINER_ID=$(docker ps -a --filter name=${{ inputs.name }} -q)
         docker cp $CONTAINER_ID:/app/home.txt container_home/
         docker cp $CONTAINER_ID:/app/copy.sh container_home/
-        GAME_ID=${{ inputs.game-id }} bash container_home/copy.sh
-    - name: Upload Achievement and Leaderboard Code
+        GAME_ID=${{ inputs.game-id }} REPORT=${{ inputs.report }} bash container_home/copy.sh
+        rm -rf container_home/home.txt
+        rm -rf container_home/copy.sh
+    - name: Upload Audit
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ github.run_id }}-${{ inputs.game-id }}-user-text
-        path: container_home/${{ inputs.game-id }}-User.txt
-    - name: Upload Code Notes
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ github.run_id }}-${{ inputs.game-id }}-notes-json
-        path: container_home/${{ inputs.game-id }}-Notes.json
-    - name: Upload Rich Presence
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ github.run_id }}-${{ inputs.game-id }}-rich-text
-        path: container_home/${{ inputs.game-id }}-Rich.txt
-    - name: Upload Report
-      uses: actions/upload-artifact@v4
-      if: ${{ inputs.report == 'true' }}
-      with:
-        name: ${{ github.run_id }}-${{ inputs.game-id }}-report-text
-        path: container_home/${{ inputs.game-id }}-Report.txt
+        name: ${{ inputs.id }}-${{ inputs.game-id }}-audit
+        path: container_home/
