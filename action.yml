@@ -38,6 +38,7 @@ runs:
     - name: Checkout repo
       uses: actions/checkout@v4
     - name: pull image
+      if: ${{ 1 == 0 }}
       uses: docker://ghcr.io/joshraphael/rascript-audit-img:c9c42f8de9d4d8756e9d7d3ce8065e1fa315c0e0
     - name: Run rascript-audit
       shell: bash
