@@ -53,6 +53,7 @@ runs:
     - name: Run Tests
       env:
         ENV_TAGS: "v0.0.4"
+      shell: bash
       run: |
         docker pull ghcr.io/joshraphael/rascript-audit-img:${{ env.DOCKER_TAG }}
     - name: Run rascript-audit
