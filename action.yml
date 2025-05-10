@@ -43,7 +43,7 @@ runs:
       shell: bash
       run: |
         mkdir -p container_home
-        docker run --name rascript-audit-img -e GAME_ID=${{ inputs.game-id }} -e RASCRIPT_FILE="${{ inputs.rascript }}" -e REPORT=${{ inputs.report }} -e SEVERITY=${{ inputs.severity }} --mount type=bind,src=.,dst=/app/rascript -i --entrypoint "sh /app/entry.sh" ghcr.io/joshraphael/rascript-audit-img:c9c42f8de9d4d8756e9d7d3ce8065e1fa315c0e0
+        docker run --name rascript-audit-img -e GAME_ID=${{ inputs.game-id }} -e RASCRIPT_FILE="${{ inputs.rascript }}" -e REPORT=${{ inputs.report }} -e SEVERITY=${{ inputs.severity }} --mount type=bind,src=.,dst=/app/rascript -i --entrypoint=/app/entry.sh ghcr.io/joshraphael/rascript-audit-img:c9c42f8de9d4d8756e9d7d3ce8065e1fa315c0e0
         export CONTAINER_ID=$(docker ps -a --filter name=${{ inputs.name }} -q)
         docker cp $CONTAINER_ID:/app/home.txt container_home/
         docker cp $CONTAINER_ID:/app/copy.sh container_home/
