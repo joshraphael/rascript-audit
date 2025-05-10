@@ -50,6 +50,8 @@ runs:
         docker cp $CONTAINER_ID:/app/home.txt container_home/
         docker cp $CONTAINER_ID:/app/copy.sh container_home/
         GAME_ID=${{ inputs.game-id }} REPORT=${{ inputs.report }} bash container_home/copy.sh
+        rm -rf container_home/home.txt
+        rm -rf container_home/copy.sh
     - name: Upload Audit
       uses: actions/upload-artifact@v4
       with:
