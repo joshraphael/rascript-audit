@@ -38,7 +38,7 @@ runs:
     - name: Checkout repo
       uses: actions/checkout@v4
     - name: pull image
-      uses: ghcr.io/joshraphael/rascript-audit-img@v0.0.3
+      uses: docker://ghcr.io/joshraphael/rascript-audit-img@v0.0.3
     - name: Run rascript-audit
       shell: bash
       run: |
