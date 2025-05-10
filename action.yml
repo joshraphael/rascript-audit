@@ -45,11 +45,16 @@ runs:
         echo "IMG_VERSION=${{env.IMG}}" >> "${GITHUB_OUTPUT}"
     - name: Checkout repo
       uses: actions/checkout@v4
-    - name: pull image
-      if: ${{ 1 == 0 }} # this is a hack to pre-fetch the docker image to reduce the logs in the actual action
+    # - name: pull image
+    #   if: ${{ 1 == 0 }} # this is a hack to pre-fetch the docker image to reduce the logs in the actual action
+    #   env:
+    #     STEP_VAR: 'v0.0.4'
+    #   uses: docker://ghcr.io/joshraphael/rascript-audit-img:${{ env.STEP_VAR }}
+    - name: Run Tests
       env:
-        STEP_VAR: 'v0.0.4'
-      uses: docker://ghcr.io/joshraphael/rascript-audit-img:${{ env.STEP_VAR }}
+        ENV_TAGS: "v0.0.4"
+      run: |
+        docker pull ghcr.io/joshraphael/rascript-audit-img:${{ env.DOCKER_TAG }}
     - name: Run rascript-audit
       shell: bash
       run: |
