@@ -1,5 +1,5 @@
 name: RAScript Audit
-description: Compiles an RAScript for RetroAchievements development and performs an audit on the code.
+description: Compile and review a RAScript achievement logic file for Retro Achievements
 author: joshraphael
 
 inputs:
@@ -8,7 +8,7 @@ inputs:
     type: string
     required: true
   game-id:
-    description: "RetroAchievements game id"
+    description: "Retro Achievements game id"
     type: number
     required: true
   rascript:
